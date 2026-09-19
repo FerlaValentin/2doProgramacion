@@ -1,6 +1,6 @@
-#include "Player.h"
+#include "Player.hpp"
 
-void Player::increaseLife(int change) {
+void Player::changeLife(int change) {
     hp = clamp(0, hp + change, maxHp);
 }
 
@@ -37,6 +37,7 @@ void pickUpBoots(Player& p) {
 
 int main() {
     Player hero;
+    Armor armor;
     hero.name = "Aria";
     hero.printPlayer();
 

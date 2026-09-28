@@ -19,16 +19,37 @@ void Player::printPlayer() {
            name.c_str(), x, y, hp, maxHp, gold, speed);
 }
 
+void Player::takeDamage(int damage){
+    for(int i = 0; i < kArmorSlots; i++){
+        if((armor_[i] == nullptr)) continue;
+
+        damage = (armor_[i])->applyDamageReduction(damage);
+        if(armor_[i]->hasArmorBroken()){
+            delete armor_[i];
+            armor_[i] = nullptr;
+        }
+    }
+    changeLife(-damage);
+}
+
+int Armor::applyDamageReduction(int damage){
+    const int absorbed_damage = damage * proteccion_;
+
+    vida_ = std::max(0, vida_ - absorbed_damage);
+
+    return damage - absorbed_damage;
+}
+
 void buyPotion(Player& p) {
     if(p.spendMoney(30)) {
-        p.increaseLife(40);
+        p.changeLife(40);
     } else {
         printf( "estas pelao!\n");
     }
 }
 
 void fallInLava(Player& p) {
-    p.increaseLife(-150);
+    p.changeLife(-150);
 }
 
 void pickUpBoots(Player& p) {

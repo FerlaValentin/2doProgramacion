@@ -22,16 +22,14 @@ class Armor {
     }
 
     int applyDamageReduction(int damage);
+    bool hasArmorBroken(){
+        return vida_ == 0;
+    }
     
     private:
     int vida_;
     float proteccion_;
 };
-
-struct Life {int v;};
-struct Damage {int v;
-    operator Life() {return Life(-v);}
-}
 
 class Player {
     public:
@@ -40,22 +38,20 @@ class Player {
     bool spendMoney(int change);
     void accelerate(float multiplier);
     void printPlayer();
-    void takeDamage(int damage) {
-        changeLife(armor_.applyDamageReduction(damage));
-    };
+    void takeDamage(int damage);
     void equipArmor(Armor armor){
         int slot = 0;
-        for(slot; slot < 10; slot++){
+        for(slot; slot < kArmorSlots; slot++){
             if(armor_[slot] == nullptr) break;
         }
 
-        if(slot == 10) return; //TODO: informar al sistema
+        if(slot == kArmorSlots) return; //TODO: informar al sistema
 
         armor_[slot] = new Armor{armor};
     };
     
     Player()
-    : armor_(0)
+    : armor_()
     , x{0.0f}
     , y{0.0f}
     , speed{0.0f}
@@ -65,16 +61,16 @@ class Player {
 
     }
     private:
-    Armor armor_ = {0, 0.0f};
+    static constexpr unsigned char kArmorSlots = 10;
+    static constexpr float minSpeed = 0.0f;
+    static constexpr float maxSpeed = 10000.0f;
+    Armor* armor_[kArmorSlots];
     float x = 0.0f;
     float y = 0.0f;
     float speed = 5.0f;
     int hp = 100;
     int maxHp = 100;
     int gold = 50;
-    //speed ente minSpeed y maxSpeed
-    float minSpeed = 0.0f;
-    float maxSpeed = 10000.0f;
 };
 
 void buyPotion(Player& p);

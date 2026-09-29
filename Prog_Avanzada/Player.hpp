@@ -2,34 +2,10 @@
 #ifndef PLAYER_HPP
 #define PLAYER_HPP
 
-#include <cstdio>
 #include <string>
+#include "Armor.hpp"
 
 #define clamp(a,b,c)  std::min((c),std::max((a),(b)))
-
-class Armor {
-    public:
-    Armor()
-    : vida_{100}
-    , proteccion_{0.1f}{
-
-    }
-
-    Armor(int vida, float proteccion)
-    : vida_{vida}
-    , proteccion_{proteccion} {
-
-    }
-
-    int applyDamageReduction(int damage);
-    bool hasArmorBroken(){
-        return vida_ == 0;
-    }
-    
-    private:
-    int vida_;
-    float proteccion_;
-};
 
 class Player {
     public:
@@ -37,9 +13,9 @@ class Player {
     void changeLife(int change);
     bool spendMoney(int change);
     void accelerate(float multiplier);
-    void printPlayer();
+    void printPlayer() const;
     void takeDamage(int damage);
-    void equipArmor(Armor armor){
+    void equipArmor(ARM::Armor armor){
         int slot = 0;
         for(slot; slot < kArmorSlots; slot++){
             if(armor_[slot] == nullptr) break;
@@ -47,7 +23,7 @@ class Player {
 
         if(slot == kArmorSlots) return; //TODO: informar al sistema
 
-        armor_[slot] = new Armor{armor};
+        armor_[slot] = new ARM::Armor{armor};
     };
     
     Player()
@@ -64,7 +40,7 @@ class Player {
     static constexpr unsigned char kArmorSlots = 10;
     static constexpr float minSpeed = 0.0f;
     static constexpr float maxSpeed = 10000.0f;
-    Armor* armor_[kArmorSlots];
+    ARM::Armor* armor_[kArmorSlots];
     float x = 0.0f;
     float y = 0.0f;
     float speed = 5.0f;

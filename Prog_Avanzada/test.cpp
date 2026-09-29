@@ -1,5 +1,10 @@
 #include "Player.hpp"
 
+#include <cstdio>
+#include <cmath>
+
+#include "Armor.hpp"
+
 void Player::changeLife(int change) {
     hp = clamp(0, hp + change, maxHp);
 }
@@ -14,7 +19,7 @@ void Player::accelerate(float multiplier){
     speed = clamp(minSpeed, speed * multiplier, maxSpeed);
 }
 
-void Player::printPlayer() {
+void Player::printPlayer() const{
     printf("%s | pos(%g, %g) | hp %d/%d | gold %d | speed %g\n",
            name.c_str(), x, y, hp, maxHp, gold, speed);
 }
@@ -32,8 +37,8 @@ void Player::takeDamage(int damage){
     changeLife(-damage);
 }
 
-int Armor::applyDamageReduction(int damage){
-    const int absorbed_damage = damage * proteccion_;
+int ARM::Armor::applyDamageReduction(int damage){
+    const int absorbed_damage = std::ceil(damage * proteccion_);
 
     vida_ = std::max(0, vida_ - absorbed_damage);
 
@@ -58,7 +63,7 @@ void pickUpBoots(Player& p) {
 
 int main() {
     Player hero;
-    Armor armor;
+    ARM::Armor armor;
     hero.name = "Aria";
     hero.printPlayer();
 

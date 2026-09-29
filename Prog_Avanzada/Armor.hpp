@@ -18,6 +18,7 @@ namespace ARM{
 
     int applyDamageReduction(int damage);
     bool hasArmorBroken() const {return vida_ == 0;}
+    void printArmor() const;
     
     private:
     int vida_;

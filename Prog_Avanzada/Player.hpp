@@ -15,16 +15,8 @@ class Player {
     void accelerate(float multiplier);
     void printPlayer() const;
     void takeDamage(int damage);
-    void equipArmor(ARM::Armor armor){
-        int slot = 0;
-        for(slot; slot < kArmorSlots; slot++){
-            if(armor_[slot] == nullptr) break;
-        }
-
-        if(slot == kArmorSlots) return; //TODO: informar al sistema
-
-        armor_[slot] = new ARM::Armor{armor};
-    };
+    void equipArmor(ARM::Armor armor);
+    void printArmors() const;
     
     Player()
     : armor_()
@@ -36,6 +28,14 @@ class Player {
     , gold{50} {
 
     }
+
+    ~Player(){
+        for(int slot = 0; slot < kArmorSlots; ++slot){
+            if(armor_[slot] == nullptr) break;
+            delete armor_[slot];
+        }
+    }
+
     private:
     static constexpr unsigned char kArmorSlots = 10;
     static constexpr float minSpeed = 0.0f;
@@ -51,6 +51,6 @@ class Player {
 
 void buyPotion(Player& p);
 void fallInLava(Player& p);
-void pickUpBoots();
+void pickUpBoots(Player& p);
 
 #endif // PLAYER_HPP

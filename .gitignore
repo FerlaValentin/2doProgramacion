@@ -6,6 +6,7 @@
 
 .vs/
 
+*.exe
 *.obj
 *.user
 *.userosscache

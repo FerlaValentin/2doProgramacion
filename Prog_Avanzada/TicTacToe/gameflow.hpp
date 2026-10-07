@@ -12,7 +12,7 @@ class GameFlow{
         Tictactoe ttt_ = Tictactoe(cellsPerCol_);
 
         void printBoard() const;
-        void askPlayer(int& x, int& y) const;
+        void askPlayer(int& x, int& y, char buffer[]) const;
         void printBadPlay() const;
         void printWinner() const;
 };

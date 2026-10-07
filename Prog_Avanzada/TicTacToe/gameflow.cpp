@@ -2,6 +2,7 @@
 
 #include <cstdio>
 #include <cstdlib>
+#include <conio.h>
 
 namespace{
     void printSeparator(int boardWidth){
@@ -25,6 +26,31 @@ namespace{
         }
         printf("\n");
     }
+
+    int GetFirstBufferEmptySlot(char buffer[], int capacity){
+        int slot = 0;
+
+        for(slot; slot <= capacity; ++slot)
+            if(buffer[slot] != '\0') break;
+        
+        return slot;
+    }
+
+    bool IsBufferFull(int first_free_slot, int capacity){
+        return first_free_slot == capacity;
+    }
+
+    void ResetBuffer(char buffer[], int capacity){
+        for(int slot = 0; slot < capacity; ++slot)
+            buffer[slot] = '\0';
+    }
+
+    void CheckBufferCapacity(char buffer[], unsigned char& first_free_slot, int capacity){
+        if(IsBufferFull(first_free_slot, capacity)){
+            ResetBuffer(buffer, capacity);
+            first_free_slot = 0;
+        }
+    }
 }
 
 void GameFlow::printBoard() const{
@@ -35,12 +61,15 @@ void GameFlow::printBoard() const{
     printSeparator(boardWidth_);
 }
 
-void GameFlow::askPlayer(int& x, int& y) const{
+void GameFlow::askPlayer(int& x, int& y, char buffer[]) const{
     printf("Jugador %c: ", static_cast<char>(ttt_.nextPlayer()));
-    do{
-        scanf("%d %d", &x, &y);
-    }while(x < 0 || x > cellsPerCol_ || y < 0 || y > cellsPerCol_);
-    system("cls");
+    if(_kbhit()){
+        const unsigned char BUFFER_CAPACITY = 4;
+        unsigned char first_free_slot = GetFirstBufferEmptySlot(buffer, BUFFER_CAPACITY);
+
+        CheckBufferCapacity(buffer, first_free_slot, BUFFER_CAPACITY);
+        buffer[first_free_slot] = getche();
+    }
 }
 
 void GameFlow::printBadPlay() const{
@@ -56,13 +85,14 @@ void GameFlow::printWinner() const{
 }
 
 void GameFlow::run(){
+    char buffer[5] = {'\0'};
     int x,y;
     
+    printBoard();
     while(!ttt_.isGameEnded()) {
-        askPlayer(x,y);
-        if(!ttt_.play(x,y)) {
-            printBadPlay();
-        }
+        askPlayer(x,y,buffer);
+        //system("cls");
+        //if(!ttt_.play(x,y)) printBadPlay();
     }
     printBoard();
     printWinner();

@@ -10,9 +10,9 @@ enum class Ficha : char{
 
 class Tictactoe {
     public:
-        Tictactoe(int cellsPerCol):
+        Tictactoe(unsigned char cellsPerCol):
             cellsPerCol_{cellsPerCol},
-            maxCells_{cellsPerCol_ * cellsPerCol_}
+            maxCells_{static_cast<unsigned char>(cellsPerCol_ * cellsPerCol_)}
         {
             celdas = (Ficha*)malloc(sizeof(Ficha) * maxCells_);
             for(int cell = 0; cell < maxCells_; cell++)  celdas[cell] = Ficha::Vacio;

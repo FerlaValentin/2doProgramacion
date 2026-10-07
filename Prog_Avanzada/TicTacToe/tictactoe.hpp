@@ -1,5 +1,7 @@
 #pragma once
 
+#include <cstdlib>
+
 enum class Ficha : char{
     X = 'X',
     O = 'O',
@@ -8,10 +10,12 @@ enum class Ficha : char{
 
 class Tictactoe {
     public:
-        static constexpr int cellsPerCol = 3, maxCells = cellsPerCol * cellsPerCol, boardWidth = cellsPerCol * 4 - 1;
-
-        Tictactoe(){
-            for(int cell = 0; cell < maxCells; cell++)  celdas[cell] = Ficha::Vacio;
+        Tictactoe(int cellsPerCol):
+            cellsPerCol_{cellsPerCol},
+            maxCells_{cellsPerCol_ * cellsPerCol_}
+        {
+            celdas = (Ficha*)malloc(sizeof(Ficha) * maxCells_);
+            for(int cell = 0; cell < maxCells_; cell++)  celdas[cell] = Ficha::Vacio;
         };
         bool play(int x, int y);
 
@@ -20,13 +24,10 @@ class Tictactoe {
         bool isGameEnded() const;
         int turn() const;
         Ficha nextPlayer() const;
-        Ficha getCell(int x, int y) const {return celdas[y * cellsPerCol + x];};
+        Ficha getCell(int x, int y) const {return celdas[y * cellsPerCol_ + x];};
 
     private:
-        Ficha celdas[maxCells];
+        const unsigned char cellsPerCol_;
+        const unsigned char maxCells_;
+        Ficha* celdas;
 };
-
-void printBoard(const Tictactoe& ttt);
-void askPlayer(const Tictactoe& ttt, int& x, int& y);
-void printBadPlay(const Tictactoe& ttt, int x, int y);
-void printWinner(const Tictactoe& ttt);

@@ -1,17 +1,9 @@
-#include "tictactoe.hpp"
+#include "gameflow.hpp"
 
 int main(int, char**) {
-    Tictactoe ttt;
-    int x,y;
+    GameFlow gf;
     
-    while(!ttt.isGameEnded()) {
-        printBoard(ttt);
-        askPlayer(ttt,x,y);
-        if(!ttt.play(x,y)) {
-            printBadPlay(ttt,x,y);
-        }
-    }
-    printWinner(ttt);
+    gf.run();
 
     return 0;
 }

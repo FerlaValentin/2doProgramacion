@@ -40,16 +40,37 @@ namespace{
         return first_free_slot == capacity;
     }
 
+    bool IsAnEnterKey(char pressed_key){
+        return pressed_key == 10 || pressed_key == 13;
+    }
+
+    bool IsANumber(char buffer_slot){
+        return buffer_slot >= '0' && buffer_slot <= '9';
+    }
+
+    bool IsASpace(char buffer_slot){
+        return buffer_slot == 32;
+    }
+
+    bool IsAValidCoord(char coord_slot, int cells_per_col){
+        return coord_slot >= 0 && coord_slot < cells_per_col;
+    }
+
+    bool IsAValidCell(char first_coord, char second_coord, int cells_per_col){
+        return IsAValidCoord(first_coord, cells_per_col) && IsAValidCoord(second_coord, cells_per_col);
+    }
+
+    bool IsInputValid(char buffer[], int cells_per_col){
+        return IsASpace(buffer[1]) && IsAValidCell(buffer[0], buffer[2], cells_per_col); 
+    }
+
     void ResetBuffer(char buffer[], int capacity){
         for(int slot = 0; slot < capacity; ++slot)
             buffer[slot] = '\0';
     }
 
-    void CheckBufferCapacity(char buffer[], unsigned char& first_free_slot, int capacity){
-        if(IsBufferFull(first_free_slot, capacity)){
-            ResetBuffer(buffer, capacity);
-            first_free_slot = 0;
-        }
+    void printInvalidFormat(){
+        printf("Invalid input. Correct format is \"[X] [Y]\"");
     }
 }
 
@@ -62,14 +83,31 @@ void GameFlow::printBoard() const{
 }
 
 void GameFlow::askPlayer(int& x, int& y, char buffer[]) const{
-    printf("Jugador %c: ", static_cast<char>(ttt_.nextPlayer()));
     if(_kbhit()){
-        const unsigned char BUFFER_CAPACITY = 4;
+        const unsigned char BUFFER_CAPACITY = 3;
         unsigned char first_free_slot = GetFirstBufferEmptySlot(buffer, BUFFER_CAPACITY);
+        char pressed_key = _getch();
 
-        CheckBufferCapacity(buffer, first_free_slot, BUFFER_CAPACITY);
-        buffer[first_free_slot] = getche();
+        if(IsBufferFull(first_free_slot, BUFFER_CAPACITY)){
+            if(IsAnEnterKey(pressed_key)) buffer[BUFFER_CAPACITY] = pressed_key;
+        }
+        else{
+            if(IsANumber(pressed_key) || IsASpace(pressed_key)){
+                printf("%c", pressed_key);
+                buffer[first_free_slot] = pressed_key;
+            }
+        }
     }
+}
+
+void GameFlow::refreshScreen() const{
+    system("cls");
+    printBoard();
+    printCurrPlayer();
+}
+
+void GameFlow::printCurrPlayer() const{
+    printf("Jugador %c: ", static_cast<char>(ttt_.nextPlayer()));
 }
 
 void GameFlow::printBadPlay() const{
@@ -85,14 +123,21 @@ void GameFlow::printWinner() const{
 }
 
 void GameFlow::run(){
-    char buffer[5] = {'\0'};
+    char buffer[4] = {'\0'};
     int x,y;
     
     printBoard();
+    printCurrPlayer();
     while(!ttt_.isGameEnded()) {
         askPlayer(x,y,buffer);
-        //system("cls");
-        //if(!ttt_.play(x,y)) printBadPlay();
+        if(IsAnEnterKey(buffer[3])){
+            refreshScreen();
+            if(IsInputValid(buffer, cellsPerCol_)){
+                if(!ttt_.play(x,y)) printBadPlay();
+            }
+            else
+                printInvalidFormat();
+        }
     }
     printBoard();
     printWinner();

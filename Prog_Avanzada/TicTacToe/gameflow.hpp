@@ -15,6 +15,8 @@ class GameFlow{
         void askPlayer(int& x, int& y, char buffer[]) const;
         void printBadPlay() const;
         void printWinner() const;
+        void refreshScreen() const;
+        void printCurrPlayer() const;
 };
 
 #endif

@@ -22,7 +22,6 @@ class Tictactoe {
         // OBSERVACION
         Ficha winCondition() const;
         bool isGameEnded() const;
-        int turn() const;
         Ficha nextPlayer() const;
         Ficha getCell(int x, int y) const {return celdas[y * cellsPerCol_ + x];};
 

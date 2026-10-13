@@ -30,47 +30,50 @@ namespace{
     int GetFirstBufferEmptySlot(char buffer[], int capacity){
         int slot = 0;
 
-        for(slot; slot <= capacity; ++slot)
-            if(buffer[slot] != '\0') break;
+        for(slot; slot < capacity; ++slot)
+            if(buffer[slot] == '\0') break;
         
         return slot;
-    }
-
-    bool IsBufferFull(int first_free_slot, int capacity){
-        return first_free_slot == capacity;
     }
 
     bool IsAnEnterKey(char pressed_key){
         return pressed_key == 10 || pressed_key == 13;
     }
 
+    bool IsBufferFull(int first_free_slot, int letters_capacity){
+        return first_free_slot == letters_capacity;
+    }
+
     bool IsANumber(char buffer_slot){
         return buffer_slot >= '0' && buffer_slot <= '9';
     }
 
-    bool IsASpace(char buffer_slot){
-        return buffer_slot == 32;
+    void DeleteLastCharacterFromConsole(){
+        constexpr char SPACE_ASCII_VALUE = 32, BACKSPACE_ASCII_VALUE = 8;
+        printf("%c%c%c", BACKSPACE_ASCII_VALUE, SPACE_ASCII_VALUE, BACKSPACE_ASCII_VALUE);
     }
 
-    bool IsAValidCoord(char coord_slot, int cells_per_col){
+    bool IsAValidCoord(int coord_slot, int cells_per_col){
         return coord_slot >= 0 && coord_slot < cells_per_col;
     }
 
+    int TranslateNumCharToInt(char number){
+        return number - '0';
+    }
+
     bool IsAValidCell(char first_coord, char second_coord, int cells_per_col){
-        return IsAValidCoord(first_coord, cells_per_col) && IsAValidCoord(second_coord, cells_per_col);
+        return IsAValidCoord(TranslateNumCharToInt(first_coord), cells_per_col) && IsAValidCoord(TranslateNumCharToInt(second_coord), cells_per_col);
     }
 
     bool IsInputValid(char buffer[], int cells_per_col){
-        return IsASpace(buffer[1]) && IsAValidCell(buffer[0], buffer[2], cells_per_col); 
+        constexpr char SPACE_ASCII_VALUE = 32;
+
+        return buffer[1] == SPACE_ASCII_VALUE && IsAValidCell(buffer[0], buffer[2], cells_per_col); 
     }
 
     void ResetBuffer(char buffer[], int capacity){
         for(int slot = 0; slot < capacity; ++slot)
             buffer[slot] = '\0';
-    }
-
-    void printInvalidFormat(){
-        printf("Invalid input. Correct format is \"[X] [Y]\"");
     }
 }
 
@@ -82,36 +85,70 @@ void GameFlow::printBoard() const{
     printSeparator(boardWidth_);
 }
 
-void GameFlow::askPlayer(int& x, int& y, char buffer[]) const{
-    if(_kbhit()){
-        const unsigned char BUFFER_CAPACITY = 3;
-        unsigned char first_free_slot = GetFirstBufferEmptySlot(buffer, BUFFER_CAPACITY);
-        char pressed_key = _getch();
-
-        if(IsBufferFull(first_free_slot, BUFFER_CAPACITY)){
-            if(IsAnEnterKey(pressed_key)) buffer[BUFFER_CAPACITY] = pressed_key;
-        }
-        else{
-            if(IsANumber(pressed_key) || IsASpace(pressed_key)){
-                printf("%c", pressed_key);
-                buffer[first_free_slot] = pressed_key;
-            }
-        }
-    }
-}
-
 void GameFlow::refreshScreen() const{
     system("cls");
     printBoard();
-    printCurrPlayer();
 }
 
 void GameFlow::printCurrPlayer() const{
     printf("Jugador %c: ", static_cast<char>(ttt_.nextPlayer()));
 }
 
+void GameFlow::AssignInputCoords(){
+    CONSOLE_SCREEN_BUFFER_INFO csbiInfo;
+    
+    GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &csbiInfo);
+    cxy_.X = csbiInfo.dwCursorPosition.X;
+    cxy_.Y = csbiInfo.dwCursorPosition.Y;
+}
+
+void GameFlow::printInvalidFormat(){
+    refreshScreen();
+    printCurrPlayer();
+    printf("\nInvalid input. Correct format is \"[X] [Y]\"\n");
+    SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), cxy_);
+    resetBuffer();
+}
+
+void GameFlow::askPlayer(){
+    if(_kbhit()){
+        constexpr char SPACE_ASCII_VALUE = 32, BACKSPACE_ASCII_VALUE = 8;
+        unsigned char first_free_slot = GetFirstBufferEmptySlot(buffer_, buffer_capacity_);
+        char pressed_key = _getch();
+
+        if(IsAnEnterKey(pressed_key)){
+            if(IsBufferFull(first_free_slot, buffer_capacity_ - 1))
+                buffer_[buffer_capacity_ - 1] = pressed_key;
+            else
+                printInvalidFormat();
+        }
+        else{
+            if(!IsBufferFull(first_free_slot, buffer_capacity_ - 1)){
+                if(IsANumber(pressed_key) || pressed_key == SPACE_ASCII_VALUE){
+                    printf("%c", pressed_key);
+                    buffer_[first_free_slot] = pressed_key;
+                }
+            }
+            if(pressed_key == BACKSPACE_ASCII_VALUE && first_free_slot){
+                DeleteLastCharacterFromConsole();
+                buffer_[first_free_slot - 1] = '\0';
+            }
+        }
+    }
+}
+
+void GameFlow::assignCoordsFromBuffer(){
+    x_ = TranslateNumCharToInt(buffer_[0]);
+    y_ = TranslateNumCharToInt(buffer_[2]);
+}
+
 void GameFlow::printBadPlay() const{
-    printf("Invalid play. Try again\n");
+    printf("\nInvalid play. Try again\n");
+}
+
+void GameFlow::resetBuffer(){
+    for(int slot = 0; slot < buffer_capacity_; ++slot)
+    buffer_[slot] = '\0';
 }
 
 void GameFlow::printWinner() const{
@@ -123,22 +160,29 @@ void GameFlow::printWinner() const{
 }
 
 void GameFlow::run(){
-    char buffer[4] = {'\0'};
-    int x,y;
-    
-    printBoard();
+    refreshScreen();
     printCurrPlayer();
+    AssignInputCoords();
     while(!ttt_.isGameEnded()) {
-        askPlayer(x,y,buffer);
-        if(IsAnEnterKey(buffer[3])){
-            refreshScreen();
-            if(IsInputValid(buffer, cellsPerCol_)){
-                if(!ttt_.play(x,y)) printBadPlay();
+        askPlayer();
+        if(IsAnEnterKey(buffer_[buffer_capacity_ - 1])){
+            if(IsInputValid(buffer_, cellsPerCol_)){
+                assignCoordsFromBuffer();
+                if(!ttt_.play(x_,y_)){
+                    refreshScreen();
+                    printCurrPlayer();
+                    printBadPlay();
+                    SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), cxy_);
+                }
+                else{
+                    refreshScreen();
+                    if(!ttt_.isGameEnded()) printCurrPlayer();
+                }
+                resetBuffer();
             }
             else
                 printInvalidFormat();
         }
     }
-    printBoard();
     printWinner();
 }

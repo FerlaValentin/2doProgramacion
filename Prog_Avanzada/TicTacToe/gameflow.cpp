@@ -10,7 +10,7 @@ namespace{
         printf("\n");
     }
 
-    void printRow(const Tictactoe& ttt, int row_index, int boardWidth, int cellsPerCol){
+    void printRow(const Tictactoe& ttt, int row_index, int boardWidth){
         for(int row_char = 0; row_char < boardWidth; row_char++){
             if(row_char % 2){
                 if(row_char % 4 % 3 == 0)
@@ -27,7 +27,7 @@ namespace{
         printf("\n");
     }
 
-    int GetFirstBufferEmptySlot(char buffer[], int capacity){
+    int GetFirstBufferEmptySlot(const char buffer[], int capacity){
         int slot = 0;
 
         for(slot; slot < capacity; ++slot)
@@ -65,22 +65,17 @@ namespace{
         return IsAValidCoord(TranslateNumCharToInt(first_coord), cells_per_col) && IsAValidCoord(TranslateNumCharToInt(second_coord), cells_per_col);
     }
 
-    bool IsInputValid(char buffer[], int cells_per_col){
+    bool IsInputValid(const char buffer[], int cells_per_col){
         constexpr char SPACE_ASCII_VALUE = 32;
 
         return buffer[1] == SPACE_ASCII_VALUE && IsAValidCell(buffer[0], buffer[2], cells_per_col); 
-    }
-
-    void ResetBuffer(char buffer[], int capacity){
-        for(int slot = 0; slot < capacity; ++slot)
-            buffer[slot] = '\0';
     }
 }
 
 void GameFlow::printBoard() const{
     for(int row = 0; row < cellsPerCol_; ++row){
         printSeparator(boardWidth_);
-        printRow(ttt_, row, boardWidth_, cellsPerCol_);
+        printRow(ttt_, row, boardWidth_);
     }
     printSeparator(boardWidth_);
 }

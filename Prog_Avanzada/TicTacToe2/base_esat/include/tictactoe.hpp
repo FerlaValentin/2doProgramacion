@@ -17,6 +17,9 @@ class Tictactoe {
             celdas = (Ficha*)malloc(sizeof(Ficha) * maxCells_);
             for(int cell = 0; cell < maxCells_; cell++)  celdas[cell] = Ficha::Vacio;
         };
+        ~Tictactoe(){
+            free(celdas);
+        }
         bool play(int x, int y);
 
         // OBSERVACION

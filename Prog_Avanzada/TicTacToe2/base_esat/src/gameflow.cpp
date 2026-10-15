@@ -53,27 +53,14 @@ namespace{
         printf("%c%c%c", BACKSPACE_ASCII_VALUE, SPACE_ASCII_VALUE, BACKSPACE_ASCII_VALUE);
     }
 
-    bool IsAValidCoord(int coord_slot, int cells_per_col){
-        return coord_slot >= 0 && coord_slot < cells_per_col;
-    }
-
     int TranslateNumCharToInt(char number){
         return number - '0';
-    }
-
-    bool IsAValidCell(char first_coord, char second_coord, int cells_per_col){
-        return IsAValidCoord(TranslateNumCharToInt(first_coord), cells_per_col) && IsAValidCoord(TranslateNumCharToInt(second_coord), cells_per_col);
     }
 
     bool IsInputValid(char buffer[], int cells_per_col){
         constexpr char SPACE_ASCII_VALUE = 32;
 
-        return buffer[1] == SPACE_ASCII_VALUE && IsAValidCell(buffer[0], buffer[2], cells_per_col); 
-    }
-
-    void ResetBuffer(char buffer[], int capacity){
-        for(int slot = 0; slot < capacity; ++slot)
-            buffer[slot] = '\0';
+        return IsANumber(buffer[0]) && buffer[1] == SPACE_ASCII_VALUE && IsANumber(buffer[2]);
     }
 }
 

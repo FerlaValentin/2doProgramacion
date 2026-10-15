@@ -10,6 +10,10 @@ namespace{
 
         return true;
     }
+
+    bool AreCoordsOutOfBound(int x, int y, int cells_per_col){
+        return x < 0 || x >= cells_per_col || y < 0 || y >= cells_per_col;
+    }
 }
 
 Ficha Tictactoe::winCondition() const{
@@ -54,6 +58,8 @@ Ficha Tictactoe::nextPlayer() const{
 bool Tictactoe::play(int x, int y){
     const unsigned char SELECTED_CELL = y * cellsPerCol_ + x;
 
+    if(isGameEnded()) return false;
+    if(AreCoordsOutOfBound(x, y, cellsPerCol_)) return false;
     if(celdas[SELECTED_CELL] != Ficha::Vacio) return false;
     celdas[SELECTED_CELL] = nextPlayer();
 

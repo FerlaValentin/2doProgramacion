@@ -4,6 +4,16 @@
 #include <windows.h>
 #include "tictactoe.hpp"
 
+class IGameFlow{
+    protected:
+        virtual void run() = 0;
+        virtual void printBoard() const = 0;
+        virtual void printCurrPlayer() const = 0;
+        virtual void askPlayer() = 0;
+        virtual void printBadPlay() const = 0;
+        virtual void printWinner() const = 0;
+};
+
 class GameFlow{
     public:
         void run();
@@ -25,15 +35,15 @@ class GameFlow{
         COORD cxy_;
 
         void printBoard() const;
+        void refreshScreen() const;
         void printCurrPlayer() const;
         void AssignInputCoords();
-        void askPlayer();
+        void printInvalidFormat();
         void assignCoordsFromBuffer();
+        void askPlayer();
         void resetBuffer();
         void printBadPlay() const;
         void printWinner() const;
-        void refreshScreen() const;
-        void printInvalidFormat();
 };
 
 #endif

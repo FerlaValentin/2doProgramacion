@@ -1,8 +1,11 @@
-#include "gameflow.hpp"
+#include "GameFlow.hpp"
 
 #include <cstdio>
 #include <cstdlib>
 #include <conio.h>
+#include <string.h>
+
+#include <esat\draw.h>
 
 namespace{
     void printSeparator(int boardWidth){
@@ -64,7 +67,7 @@ namespace{
     }
 }
 
-void GameFlow::printBoard() const{
+void ConsoleGameFlow::printBoard() const{
     for(int row = 0; row < cellsPerCol_; ++row){
         printSeparator(boardWidth_);
         printRow(ttt_, row, boardWidth_, cellsPerCol_);
@@ -72,16 +75,16 @@ void GameFlow::printBoard() const{
     printSeparator(boardWidth_);
 }
 
-void GameFlow::refreshScreen() const{
+void ConsoleGameFlow::refreshScreen() const{
     system("cls");
     printBoard();
 }
 
-void GameFlow::printCurrPlayer() const{
+void ConsoleGameFlow::printCurrPlayer() const{
     printf("Jugador %c: ", static_cast<char>(ttt_.nextPlayer()));
 }
 
-void GameFlow::AssignInputCoords(){
+void ConsoleGameFlow::AssignInputCoords(){
     CONSOLE_SCREEN_BUFFER_INFO csbiInfo;
     
     GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &csbiInfo);
@@ -89,7 +92,7 @@ void GameFlow::AssignInputCoords(){
     cxy_.Y = csbiInfo.dwCursorPosition.Y;
 }
 
-void GameFlow::printInvalidFormat(){
+void ConsoleGameFlow::printInvalidFormat(){
     refreshScreen();
     printCurrPlayer();
     printf("\nInvalid input. Correct format is \"[X] [Y]\"\n");
@@ -97,7 +100,7 @@ void GameFlow::printInvalidFormat(){
     resetBuffer();
 }
 
-void GameFlow::askPlayer(){
+void ConsoleGameFlow::askPlayer(){
     if(_kbhit()){
         constexpr char SPACE_ASCII_VALUE = 32, BACKSPACE_ASCII_VALUE = 8;
         unsigned char first_free_slot = GetFirstBufferEmptySlot(buffer_, buffer_capacity_);
@@ -124,21 +127,21 @@ void GameFlow::askPlayer(){
     }
 }
 
-void GameFlow::assignCoordsFromBuffer(){
+void ConsoleGameFlow::assignCoordsFromBuffer(){
     x_ = TranslateNumCharToInt(buffer_[0]);
     y_ = TranslateNumCharToInt(buffer_[2]);
 }
 
-void GameFlow::printBadPlay() const{
+void ConsoleGameFlow::printBadPlay() const{
     printf("\nInvalid play. Try again\n");
 }
 
-void GameFlow::resetBuffer(){
+void ConsoleGameFlow::resetBuffer(){
     for(int slot = 0; slot < buffer_capacity_; ++slot)
     buffer_[slot] = '\0';
 }
 
-void GameFlow::printWinner() const{
+void ConsoleGameFlow::printWinner() const{
     switch(ttt_.winCondition()){
         case Ficha::X: printf("Player X wins!"); break;
         case Ficha::O: printf("Player O wins!"); break;
@@ -146,7 +149,7 @@ void GameFlow::printWinner() const{
     }
 }
 
-void GameFlow::run(){
+void ConsoleGameFlow::run(){
     refreshScreen();
     printCurrPlayer();
     AssignInputCoords();
@@ -172,4 +175,39 @@ void GameFlow::run(){
         }
     }
     printWinner();
+}
+
+namespace{
+    void DrawSeparator(short screen_x, float separator_height){
+        esat::DrawSetStrokeColor(143, 0, 255);
+        esat::DrawLine(0.0f, separator_height, screen_x, separator_height);
+    }
+}
+
+void GraphicGameFlow::printBoard() const{
+    DrawSeparator(SCREEN_X_, EVENT_LOG_HEIGHT_);
+    esat::DrawSetStrokeColor(255, 255, 255);
+    esat::DrawLine(0.0f, EVENT_LOG_HEIGHT_ / 3, SCREEN_X_, EVENT_LOG_HEIGHT_ / 3);
+    esat::DrawLine(0.0f, EVENT_LOG_HEIGHT_ / 3 * 2, SCREEN_X_, EVENT_LOG_HEIGHT_ / 3 * 2);
+    esat::DrawLine(SCREEN_X_ / 3, 0.0f, SCREEN_X_ / 3, EVENT_LOG_HEIGHT_);
+    esat::DrawLine(SCREEN_X_ / 3 * 2, 0.0f, SCREEN_X_ / 3 * 2, EVENT_LOG_HEIGHT_);
+}
+
+void GraphicGameFlow::printCurrPlayer() const{
+    const float EVENT_LOG_MID = (SCREEN_Y_ + EVENT_LOG_HEIGHT_) / 2;
+    char turn_text[9] = {'P','l','a','y','e','r',' ',static_cast<char>(ttt_.nextPlayer()), '\0'};
+
+    esat::DrawSetFillColor(255,255,0);
+    esat::DrawText(SCREEN_X_ / 3.0f, EVENT_LOG_MID, turn_text);
+}
+
+void GraphicGameFlow::askPlayer(){}
+
+void GraphicGameFlow::printBadPlay() const{}
+
+void GraphicGameFlow::printWinner() const{}
+
+void GraphicGameFlow::run(){
+    GraphicGameFlow::printBoard();
+    GraphicGameFlow::printCurrPlayer();
 }

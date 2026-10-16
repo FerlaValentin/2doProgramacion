@@ -6,6 +6,8 @@
 #include <string.h>
 
 #include <esat\draw.h>
+#include <esat\input.h>
+#include <esat\math.h>
 
 namespace{
     void printSeparator(int boardWidth){
@@ -182,6 +184,13 @@ namespace{
         esat::DrawSetStrokeColor(143, 0, 255);
         esat::DrawLine(0.0f, separator_height, screen_x, separator_height);
     }
+    
+    bool IsMouseOverBoard(short screen_x, float event_log_height){
+        esat::Vec2 mouse_pos = {esat::MousePositionX(), esat::MousePositionY()};
+
+        return mouse_pos.x >= 0 && mouse_pos.x <= screen_x
+            && mouse_pos.y >= 0 && mouse_pos.y <= event_log_height;
+    }
 }
 
 void GraphicGameFlow::printBoard() const{
@@ -198,10 +207,16 @@ void GraphicGameFlow::printCurrPlayer() const{
     char turn_text[9] = {'P','l','a','y','e','r',' ',static_cast<char>(ttt_.nextPlayer()), '\0'};
 
     esat::DrawSetFillColor(255,255,0);
-    esat::DrawText(SCREEN_X_ / 3.0f, EVENT_LOG_MID, turn_text);
+    esat::DrawText(SCREEN_X_ / 2.0f, EVENT_LOG_MID, turn_text);
 }
 
-void GraphicGameFlow::askPlayer(){}
+void GraphicGameFlow::askPlayer(){
+    if(IsMouseOverBoard(SCREEN_X_, EVENT_LOG_HEIGHT_)){
+        esat::Vec2 mouse_pos = {esat::MousePositionX(), esat::MousePositionY()};
+
+        mouse_pos
+    }
+}
 
 void GraphicGameFlow::printBadPlay() const{}
 
@@ -210,4 +225,5 @@ void GraphicGameFlow::printWinner() const{}
 void GraphicGameFlow::run(){
     GraphicGameFlow::printBoard();
     GraphicGameFlow::printCurrPlayer();
+    GraphicGameFlow::askPlayer();
 }

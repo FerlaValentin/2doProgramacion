@@ -15,6 +15,7 @@ class IGameFlow{
         virtual ~IGameFlow() = default;
     protected:
         static constexpr unsigned char cellsPerCol_ = 3;
+        char x_ = -1, y_ = -1;
         Tictactoe ttt_ = Tictactoe(cellsPerCol_);
 
         virtual void printBoard() const = 0;
@@ -29,8 +30,6 @@ class ConsoleGameFlow : public IGameFlow{
         void run() override;
 
         ConsoleGameFlow():
-        x_{-1},
-        y_{-1},
         cxy_{0, 0}
         {
             for(int slot = 0; slot < buffer_capacity_; slot++)
@@ -39,7 +38,7 @@ class ConsoleGameFlow : public IGameFlow{
 
     private:
         static constexpr unsigned char maxCells_ = cellsPerCol_ * cellsPerCol_, boardWidth_ = cellsPerCol_ * 4 - 1, buffer_capacity_ = 4;
-        char buffer_[buffer_capacity_], x_, y_;
+        char buffer_[buffer_capacity_];
         COORD cxy_;
 
         void printBoard() const override;
@@ -61,12 +60,14 @@ class GraphicGameFlow : public IGameFlow{
         GraphicGameFlow(short screen_x, short screen_y):
         SCREEN_X_{screen_x},
         SCREEN_Y_{screen_y},
-        EVENT_LOG_HEIGHT_{SCREEN_Y_ / 4.0f * 3}
+        EVENT_LOG_HEIGHT_{SCREEN_Y_ / 4.0f * 3},
+        was_last_move_bad_{false}
         {}
     private:
         static constexpr unsigned char CELL_SIDE_LENGTH_X = 100;
         const short SCREEN_X_, SCREEN_Y_;
         const float EVENT_LOG_HEIGHT_;
+        bool was_last_move_bad_;
 
         void printBoard() const override;
         void printCurrPlayer() const override;

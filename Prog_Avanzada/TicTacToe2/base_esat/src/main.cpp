@@ -19,14 +19,12 @@ int esat::main(int argc, char **argv) {
     if(curr_screen == Screens::MenuScreen){
       curr_screen = menu.Run();
       if(curr_screen == Screens::GraphicScreen){
-        esat::DrawSetTextFont("./../data/Nunito/Nunito-VariableFont_wght.ttf");
-        esat::DrawSetTextSize(20.0f);
+        gf = new GraphicGameFlow(SCREEN_X, SCREEN_Y);
+        esat::DrawSetTextFont("./../data/Nunito/static/Nunito-ExtraBold.ttf");
       }
     }
-    if(curr_screen == Screens::GraphicScreen){
-      gf = new GraphicGameFlow(SCREEN_X, SCREEN_Y);
-      gf->run();
-      delete gf;
+    else{
+      if(curr_screen == Screens::GraphicScreen) gf->run();
     }
 
     esat::DrawEnd();
@@ -36,8 +34,8 @@ int esat::main(int argc, char **argv) {
   if(curr_screen == Screens::CMDScreen){
     gf = new ConsoleGameFlow();
     gf->run();
-    delete gf;
   }
+  delete gf;
 
   return 0;
 }

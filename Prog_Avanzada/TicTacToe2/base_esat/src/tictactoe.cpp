@@ -55,13 +55,15 @@ Ficha Tictactoe::nextPlayer() const{
     return played_cells % 2 ? Ficha::O : Ficha::X;
 }
 
-bool Tictactoe::play(int x, int y){
+bool Tictactoe::play(char& x, char& y){
     const unsigned char SELECTED_CELL = y * cellsPerCol_ + x;
 
     if(isGameEnded()) return false;
     if(AreCoordsOutOfBound(x, y, cellsPerCol_)) return false;
     if(celdas[SELECTED_CELL] != Ficha::Vacio) return false;
     celdas[SELECTED_CELL] = nextPlayer();
+    x = -1;
+    y = -1;
 
     return true;
 }

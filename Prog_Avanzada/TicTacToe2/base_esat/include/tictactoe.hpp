@@ -20,7 +20,7 @@ class Tictactoe {
         ~Tictactoe(){
             free(celdas);
         }
-        bool play(int x, int y);
+        bool play(char& x, char& y);
 
         // OBSERVACION
         Ficha winCondition() const;

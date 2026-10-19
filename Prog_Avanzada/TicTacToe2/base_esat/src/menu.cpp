@@ -9,7 +9,7 @@ bool Menu::CheckHovering(const TSpriteConfig& sprite) const{
     bool inside_x = false, inside_y = false;
     const esat::Vec2 half_real_proportions = {esat::SpriteWidth(sprite.sprite) * sprite.st.scale_x * 0.5f,
                 esat::SpriteHeight(sprite.sprite) * sprite.st.scale_y * 0.5f},
-                mouse = {esat::MousePositionX(), esat::MousePositionY()};
+                mouse = {(float)esat::MousePositionX(), (float)esat::MousePositionY()};
 
     inside_x = sprite.st.x - half_real_proportions.x <= mouse.x && mouse.x <= sprite.st.x + half_real_proportions.x;
     inside_y = sprite.st.y - half_real_proportions.y <= mouse.y && mouse.y <= sprite.st.y + half_real_proportions.y;

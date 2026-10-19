@@ -7,6 +7,7 @@ REM DEBUG CONFIGURATION
 
 REM COMPILE SOURCE CODE
 cl /nologo /Zi /GR- /EHs /W3 /MDd -I ..\include -I ..\deps\esat\include /c ..\src\*.cpp
+if errorlevel 1 exit /b 1
 
 REM LINK PROGRAM
 cl /nologo /Zi /GR- /EHs /W3 /MDd /Fe:main.exe *.obj ..\deps\esat\bin\ESAT_d.lib opengl32.lib user32.lib gdi32.lib shell32.lib /link /IGNORE:4099

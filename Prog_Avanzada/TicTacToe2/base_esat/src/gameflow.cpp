@@ -194,7 +194,8 @@ namespace{
     }
 
     void DrawTile(const Tictactoe& ttt, unsigned char cells_per_col, short screen_x, float separator_height){
-        const float screen_x_third = screen_x / 3.0f, separator_height_third = separator_height / 3;
+        const short screen_x_third = screen_x / 3;
+        const float separator_height_third = separator_height / 3;
 
         esat::DrawSetTextSize(50.0f);
         for(int y = 0; y < cells_per_col; ++y){
@@ -211,12 +212,12 @@ namespace{
     bool IsMouseOverBoard(short screen_x, float event_log_height){
         esat::Vec2 mouse_pos = {(float)esat::MousePositionX(), (float)esat::MousePositionY()};
 
-        return mouse_pos.x >= 0 && mouse_pos.x < screen_x
-            && mouse_pos.y >= 0 && mouse_pos.y < event_log_height;
+        return mouse_pos.x >= 0 && mouse_pos.x <= screen_x
+            && mouse_pos.y >= 0 && mouse_pos.y <= event_log_height;
     }
     
     esat::Vec2 GetHoveredCell(esat::Vec2 mouse_pos, short screen_x, float event_log_height){
-        const float screen_x_third = screen_x / 3.0f;
+        const short screen_x_third = screen_x / 3;
         const float log_height_third = event_log_height / 3;
         
         return {(float)((int)mouse_pos.x / screen_x_third), (float)((int)mouse_pos.y / (int)log_height_third)};

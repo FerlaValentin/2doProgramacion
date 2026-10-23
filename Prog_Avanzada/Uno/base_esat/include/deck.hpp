@@ -1,17 +1,19 @@
+#pragma once
 #ifndef DECK_HPP
 #define DECK_HPP
 
-#include <vector>
+#include "IDeck.hpp"
 
-class Card;
+class Deck : public IDeck{
+    public:
+        int size() const override;
+        const ICard& operator[](int index) const override;
 
-class Deck {
- public:
-  void shuffle();
-  int size() const;
+        void shuffle() override;
+        void swap(IDeck& other) override;
 
- private:
-  std::vector<Card> cards_;
+        void move(IDeck& other,int destination=-1) override;
+        void move(IDeck& other,int origin, int destination=-1) override; 
 };
 
 #endif

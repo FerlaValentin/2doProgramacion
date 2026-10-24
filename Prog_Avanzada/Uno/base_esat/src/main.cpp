@@ -3,6 +3,7 @@
 #include <esat\draw.h>
 
 #include "Menu.hpp"
+#include "ConsoleController.hpp"
 
 int esat::main(int argc, char **argv) {
   constexpr short SCREEN_X = 640, SCREEN_Y = 480; 
@@ -10,7 +11,7 @@ int esat::main(int argc, char **argv) {
   esat::WindowSetMouseVisibility(true);
   Menu menu(SCREEN_X, SCREEN_Y);
   Screens curr_screen = Screens::MenuScreen;
-  //IGameFlow* gf = nullptr;
+  IController* controller = nullptr;
   while (esat::WindowIsOpened() && !esat::IsSpecialKeyDown(esat::kSpecialKey_Escape) && curr_screen != Screens::CMDScreen) {
     esat::DrawBegin();
     esat::DrawClear(0, 0, 0);
@@ -31,10 +32,10 @@ int esat::main(int argc, char **argv) {
   }
   esat::WindowDestroy();
   if(curr_screen == Screens::CMDScreen){
-    //gf = new ConsoleGameFlow();
-    //gf->run();
+    controller = new ConsoleController();
+    controller->run();
   }
-  //delete gf;
+  delete controller;
 
   return 0;
 }

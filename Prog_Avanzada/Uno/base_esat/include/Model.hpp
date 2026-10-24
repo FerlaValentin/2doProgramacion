@@ -3,7 +3,9 @@
 #define MODEL_HPP
 
 #include "IModel.hpp"
+#include <vector>
 #include "Deck.hpp"
+#include "Player.hpp"
 
 class Model : public IModel{
     public:
@@ -20,9 +22,9 @@ class Model : public IModel{
         bool playCard(int cardIndex,bool unoSaid) override;
 
         IModel* clone() const override;
-    
     private:
-        
+        std::vector<Deck> hands_;
+        std::vector<Player> players_;
 };
 
 #endif

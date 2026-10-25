@@ -3,11 +3,8 @@
 #define CONSOLE_VIEW_HPP
 
 #include "interfaces/IView.hpp"
-
-namespace std{
-    typedef basic_string<char> string;
-    template<typename T> class optional{};
-}
+#include <optional>
+#include <string>
 
 class ConsoleView : public IView {
     public:
@@ -28,8 +25,8 @@ class ConsoleView : public IView {
 
         void printUNO() const;
         void askNumPlayer() const;
-        std::optional<std::string> readTextInput();
-        std::optional<int> readIntegerInput();
+        std::optional<std::string> readTextInput(std::optional<size_t> max_input_size = std::nullopt);
+        std::optional<int> readIntegerInput(std::optional<size_t> max_input_size = std::nullopt);
 
     private:
         std::string input_;

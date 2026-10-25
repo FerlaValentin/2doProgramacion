@@ -4,8 +4,9 @@
 
 void ConsoleController::prepareMatch(){
     view_.askNumPlayer();
-    while(!model_.playerCount()){
-        view_.readIntegerInput();
+    std::optional<std::string> input = std::nullopt;
+    while(!input){
+        view_.readTextInput(2);
     }
 }
 

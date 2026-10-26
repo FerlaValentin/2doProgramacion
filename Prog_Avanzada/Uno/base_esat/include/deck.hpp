@@ -2,7 +2,7 @@
 #ifndef DECK_HPP
 #define DECK_HPP
 
-#include "IDeck.hpp"
+#include "interfaces/IDeck.hpp"
 
 class Deck : public IDeck{
     public:

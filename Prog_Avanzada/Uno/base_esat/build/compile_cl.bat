@@ -6,7 +6,7 @@ del *.obj *.pdb *.ilk *.exe
 REM DEBUG CONFIGURATION
 
 REM COMPILE SOURCE CODE
-cl /nologo /Zi /GR- /EHs /W3 /MDd -I ..\include -I ..\deps\esat\include /c ..\src\*.cpp
+cl /std:c++17 /nologo /Zi /GR- /EHs /W3 /MDd -I ..\include -I ..\deps\esat\include /c ..\src\*.cpp
 if errorlevel 1 exit /b 1
 
 REM LINK PROGRAM

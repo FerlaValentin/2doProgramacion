@@ -3,6 +3,9 @@
 #include <cstdio>
 #include <conio.h>
 #include <stdexcept>
+#include <cassert>
+
+#include "UnoErrorCodes.hpp"
 
 namespace{
     void DeleteCharacter(std::string& input){
@@ -62,6 +65,14 @@ std::optional<std::string> ConsoleView::readTextInput(std::optional<size_t> max_
     return std::nullopt;
 }
 
+void ConsoleView::printUnoError(UnoError err) const{
+    switch(err){
+        case UnoError::TooFewPlayers: std::puts("Not enough players"); break;
+        case UnoError::TooManyPlayers: std::puts("Max players amount exceeded"); break;
+        default: assert("Unidentified UNO error code"); break;
+    }
+}
+
 std::optional<int> ConsoleView::readIntegerInput(std::optional<size_t> max_input_size){
     std::optional<int> num_input = std::nullopt;
     std::optional<std::string> str = readTextInput(max_input_size);
@@ -70,14 +81,12 @@ std::optional<int> ConsoleView::readIntegerInput(std::optional<size_t> max_input
         size_t pos = 0;
         try{
             num_input = std::stoi(str.value(), &pos);
+            if(pos + 1 < str.value().size())    throw std::invalid_argument("Invalid numeric characters");
+            return num_input;
         }
         catch(std::invalid_argument const& ex){
             printf("%s\n",ex.what());
         }
-        if(pos + 1 == str.value().size())
-            return num_input;
-        else
-            std::puts("Invalid numeric argument");
     }
 
     return std::nullopt;

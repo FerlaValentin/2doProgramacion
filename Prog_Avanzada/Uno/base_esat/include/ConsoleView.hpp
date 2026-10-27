@@ -3,8 +3,11 @@
 #define CONSOLE_VIEW_HPP
 
 #include "interfaces/IView.hpp"
+
 #include <optional>
 #include <string>
+
+enum class UnoError;
 
 class ConsoleView : public IView {
     public:
@@ -26,6 +29,7 @@ class ConsoleView : public IView {
         void printUNO() const;
         void askNumPlayer() const;
         std::optional<std::string> readTextInput(std::optional<size_t> max_input_size = std::nullopt);
+        void printUnoError(UnoError err) const;
         std::optional<int> readIntegerInput(std::optional<size_t> max_input_size = std::nullopt);
 
     private:

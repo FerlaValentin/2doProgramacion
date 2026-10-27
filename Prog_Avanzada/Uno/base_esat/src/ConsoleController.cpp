@@ -3,13 +3,25 @@
 #include <string>
 #include <optional>
 
-void ConsoleController::prepareMatch(){
-    view_.askNumPlayer();
-    std::optional<int> input = std::nullopt;
-    while(input.has_value() == false){
-        input = view_.readIntegerInput();
+namespace{
+    void preparePlayers(ConsoleView& v, Model& m){
+        v.askNumPlayer();
+        while(!m.playerCount()){
+            std::optional<int> player_amount_input = std::nullopt;
+
+            player_amount_input = v.readIntegerInput();
+            if(player_amount_input.has_value()){
+                auto players_amount_setting_err = m.setPlayers(player_amount_input.value());
+                if(players_amount_setting_err.has_value()) v.printUnoError(players_amount_setting_err.value());
+            }
+        }
     }
-    printf("The number is: %d\n", input.value());
+}
+
+void ConsoleController::prepareMatch(){
+    model_.prepareCards();
+    preparePlayers(view_, model_);
+    model_.setHands();
 }
 
 void ConsoleController::run(){

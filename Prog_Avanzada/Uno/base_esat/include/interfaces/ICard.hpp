@@ -6,13 +6,13 @@
 
 class ICard {
     public:
-    virtual Color getColor() = 0;
-    virtual int getValue() = 0; // Undefined if isSpecial = true
-    virtual bool isSpecial() = 0;
-    virtual bool skipsPlayer() = 0;
-    virtual bool changeDirection() = 0;
-    virtual int addPenaltyCards() = 0;
-    virtual bool changeColor() = 0;
+    virtual Color getColor() const = 0;
+    virtual int getValue() const = 0; // Undefined if isSpecial = true
+    virtual bool isSpecial() const = 0;
+    virtual bool skipsPlayer() const = 0;
+    virtual bool changeDirection() const = 0;
+    virtual int addPenaltyCards() const = 0;
+    virtual bool changeColor() const = 0;
     virtual ~ICard() = default;
 };
 

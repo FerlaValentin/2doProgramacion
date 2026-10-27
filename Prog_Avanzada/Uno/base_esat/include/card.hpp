@@ -4,15 +4,27 @@
 
 #include "interfaces/ICard.hpp"
 
+#include "CardType.hpp"
+
 class Card : public ICard {
     public:
-        Color getColor() override {return Color::Null;};
-        int getValue() override {return -1;};
-        bool isSpecial() override {return false;};
-        bool skipsPlayer() override {return false;};
-        bool changeDirection() override {return false;};
-        int addPenaltyCards() override {return -1;};
-        bool changeColor() override {return false;};
+        Card(Color color, CardType type):
+            color_{color},
+            type_{type}
+        {
+
+        }
+
+        Color getColor() const override {return Color::Null;};
+        int getValue() const override {return -1;};
+        bool isSpecial() const override {return false;};
+        bool skipsPlayer() const override {return false;};
+        bool changeDirection() const override {return false;};
+        int addPenaltyCards() const override {return -1;};
+        bool changeColor() const override {return false;};
+    protected:
+        Color color_;
+        CardType type_;
 };
 
 #endif

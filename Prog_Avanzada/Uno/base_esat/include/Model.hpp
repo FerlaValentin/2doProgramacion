@@ -15,7 +15,7 @@ enum class UnoError;
 
 class Model : public IModel{
     public:
-        int playerCount() const override;
+        int playerCount() const override { return players_.size(); }
         // int currentPlayer() const override;
         // const IDeck& getDrawDeck() const override;
         // const IDeck& getDiscardDeck() const override;
@@ -29,15 +29,16 @@ class Model : public IModel{
 
         // IModel* clone() const override;
 
-        void prepareCards();
+        void prepareDrawPile();
         std::optional<UnoError> setPlayers(int num_of_players);
         void setHands();
 
     private:
-        static constexpr unsigned char minPlayers = 2, maxPlayers = 10;
+        static constexpr unsigned char minPlayers = 2, maxPlayers = 10, minCardNumber = 0, maxCardNumber = 9;
         Deck draw_pile_, discard_pile_;
         std::vector<Deck> hands_;
         std::vector<Player> players_;
+        
 };
 
 #endif

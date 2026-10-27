@@ -18,8 +18,12 @@ class Deck : public IDeck{
 
         //void move(IDeck& other,int destination=-1) override;
         //void move(IDeck& other,int origin, int destination=-1) override;
+
+        void AddCard(const Card& card) {cards_.emplace_back(card);}
+        void DebugDeck(const Deck& d) const;
+        
     private:
-        std::vector<Card> cards_;
+        std::vector<const Card&> cards_;
 };
 
 #endif

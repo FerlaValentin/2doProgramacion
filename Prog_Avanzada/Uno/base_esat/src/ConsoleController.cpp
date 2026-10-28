@@ -15,11 +15,12 @@ namespace{
                 if(players_amount_setting_err.has_value()) v.printUnoError(players_amount_setting_err.value());
             }
         }
+        m.setFirstPlayer();
     }
 }
 
 void ConsoleController::prepareMatch(){
-    model_.prepareCards();
+    model_.prepareDrawPile();
     preparePlayers(view_, model_);
     model_.setHands();
 }

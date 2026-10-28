@@ -31,10 +31,12 @@ class Model : public IModel{
 
         void prepareDrawPile();
         std::optional<UnoError> setPlayers(int num_of_players);
+        void setFirstPlayer();
         void setHands();
 
     private:
-        static constexpr unsigned char minPlayers = 2, maxPlayers = 10, minCardNumber = 0, maxCardNumber = 9;
+        static constexpr unsigned char min_players_ = 2, max_players_ = 10, min_card_number_ = 0, max_card_number_ = 9;
+        unsigned char player_turn_;
         Deck draw_pile_, discard_pile_;
         std::vector<Deck> hands_;
         std::vector<Player> players_;

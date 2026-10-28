@@ -1,3 +1,5 @@
+#include <ctime>
+
 #include <esat\window.h>
 #include <esat\input.h>
 #include <esat\draw.h>
@@ -6,6 +8,7 @@
 #include "ConsoleController.hpp"
 
 int esat::main(int argc, char **argv) {
+  srand(time(NULL));
   constexpr short SCREEN_X = 640, SCREEN_Y = 480; 
   esat::WindowInit(SCREEN_X, SCREEN_Y);
   esat::WindowSetMouseVisibility(true);

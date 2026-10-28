@@ -23,7 +23,7 @@ class Deck : public IDeck{
         void DebugDeck(const Deck& d) const;
         
     private:
-        std::vector<const Card&> cards_;
+        std::vector<Card> cards_;
 };
 
 #endif

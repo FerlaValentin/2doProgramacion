@@ -15,8 +15,8 @@ enum class UnoError;
 
 class Model : public IModel{
     public:
-        int playerCount() const override { return players_.size(); }
-        // int currentPlayer() const override;
+        int playerCount() const override { return players_.size(); };
+        int currentPlayer() const override {return player_turn_;};
         // const IDeck& getDrawDeck() const override;
         // const IDeck& getDiscardDeck() const override;
         // const IDeck& getPlayerHand(int id) const override;

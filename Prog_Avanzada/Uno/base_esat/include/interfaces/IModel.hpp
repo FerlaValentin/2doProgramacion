@@ -8,7 +8,7 @@
 class IModel {
     public:
     virtual int playerCount() const = 0;
-    // virtual int currentPlayer() const = 0;
+    virtual int currentPlayer() const = 0;
     // virtual const IDeck& getDrawDeck() const = 0;
     // virtual const IDeck& getDiscardDeck() const = 0;
     // virtual const IDeck& getPlayerHand(int id) const = 0;

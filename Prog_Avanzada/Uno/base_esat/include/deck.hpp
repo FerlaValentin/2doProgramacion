@@ -10,10 +10,10 @@
 
 class Deck : public IDeck{
     public:
-        //int size() const override;
+        int size() const override {return cards_.size();};
         //const ICard& operator[](int index) const override;
 
-        //void shuffle() override;
+        void shuffle() override;
         //void swap(IDeck& other) override;
 
         //void move(IDeck& other,int destination=-1) override;
